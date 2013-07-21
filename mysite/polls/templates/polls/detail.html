@@ -1,6 +1,30 @@
-<h1>{{ poll.question }}</h1>
-<ul>
-{% for choice in poll.choice_set.all %}
-    <li>{{ choice.choice_text }}</li>
-{% endfor %}
+{% extends "polls/base.html" %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="{% url 'polls:index' %}">首页</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'polls:index' %}">所有投票</a> <span class="divider">/</span></li>
+    <li class="active">{{ poll.question }}</li>
 </ul>
+
+<div class="span3"></div>
+<div class="span5">
+    <h1>问题：{{ poll.question }}</h1>
+
+    {% if error_message %}<p class="label label-important"><strong>{{ error_message }}</strong></p>{% endif %}
+
+    <form action="{% url 'polls:vote' poll.id %}" method="post">
+    {% csrf_token %}
+    {% for choice in poll.choice_set.all %}
+        <label class="radio" for="choice{{ forloop.counter }}">
+            <input  type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+            {{ choice.choice_text }}
+        </label>
+    {% endfor %}
+    <input class="btn btn-success" type="submit" value="投票" />
+    <a href="{% url 'polls:index' %}">返回所有投票</a>
+    </form>
+</div>
+
+{% endblock %}

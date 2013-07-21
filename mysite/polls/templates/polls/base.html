@@ -1,0 +1,24 @@
+{% load staticfiles %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+    <title>投票系统</title>
+
+    <script type="text/javascript" src="{% static 'polls/jquery/jquery-2.0.3.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'polls/bootstrap/js/bootstrap.min.js' %}"></script>
+    <link href="{% static 'polls/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'polls/bootstrap/css/bootstrap-responsive.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'polls/basic/css/style.css' %}" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+    <div class="row-fluid">
+        <div class="hero-unit">
+            <h1>欢迎参加投票系统</h1>
+        </div>
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

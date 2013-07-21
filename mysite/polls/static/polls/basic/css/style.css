@@ -1,0 +1,12 @@
+.index-votes{
+    float:left;
+}
+
+.index-votes .vote{
+    float:left;
+    width:350px;
+    margin: 30px 0 0 20px;
+    border-right:2px #DBD6D6 solid;
+    border-bottom:3px #DBD6D6 solid;
+    padding:3px;
+}

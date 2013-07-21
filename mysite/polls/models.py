@@ -10,8 +10,9 @@ class Poll(models.Model):
     pub_date = models.DateTimeField('date published')
     def __unicode__(self):
         return self.question
-    def was_published_recently(sefl):
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+    def was_published_recently(self):
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) <= self.pub_date < now
     was_published_recently.admin_order_field = 'pub_date'
     was_published_recently.boolean = True
     was_published_recently.shor_description = '最近发布？'

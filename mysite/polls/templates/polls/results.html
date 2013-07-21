@@ -1,0 +1,26 @@
+{% extends "polls/base.html" %}
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="{% url 'polls:index' %}">首页</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'polls:index' %}">所有投票</a> <span class="divider">/</span></li>
+    <li class="active">{{ poll.question }}</li>
+</ul>
+
+<div class="span3"></div>
+<div class="span5">
+
+    <h1>{{ poll.question }}</h1>
+
+    <ul>
+    {% for choice in poll.choice_set.all %}
+        <li>{{ choice.choice_text }} -- {{ choice.votes }} 票 </li>
+    {% endfor %}
+    </ul>
+
+    <a href="{% url 'polls:detail' poll.id %}">再次投票?</a>
+    <br />
+    <a href="{% url 'polls:index' %}">返回所有投票</a>
+</div>
+{% endblock %}

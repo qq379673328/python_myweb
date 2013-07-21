@@ -1,40 +1,45 @@
 #! /usr/bin/env python
 #coding=utf-8
-# Create your views here.
 
-from django.http import HttpResponse, Http404
-# from django.template import RequestContext, loader
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
+from django.views import generic
+from django.utils import timezone
 
-from polls.models import Poll
+from polls.models import Choice, Poll
 
-#主页
-def index(request):
-    latest_poll_list = Poll.objects.order_by('-pub_date')[:5]
-    #output = ' '.join([p.question for p in latest_poll_list])
-    #template = loader.get_template('polls/index.html')
-    # context = RequestContext(request,{
-    #     'latest_poll_list': latest_poll_list,
-    # })
-    context = {
-        'latest_poll_list' : latest_poll_list
-    }
-    #return HttpResponse(template.render(context))
-    return render(request, 'polls/index.html', context)
+class IndexView(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'latest_poll_list'
 
-#详细页
-def detail(request, poll_id):
-    # try:
-    #     poll = Poll.objects.get(pk=poll_id)
-    # except Poll.DoesNotExixt:
-    #     raise Http404
-    poll = get_object_or_404(Poll, pk=poll_id)
-    return render(request, 'polls/detail.html', {'poll':poll})
+    def get_queryset(self):
+        return Poll.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')[:5]
 
-#投票结果页
-def results(request, poll_id):
-    return HttpResponse("Results vote %s ." % poll_id)
 
-#投票页
+class DetailView(generic.DetailView):
+    model = Poll
+    template_name = 'polls/detail.html'
+
+
+class ResultsView(generic.DetailView):
+    model = Poll
+    template_name = 'polls/results.html'
+
 def vote(request, poll_id):
-    return HttpResponse("Vote %s ." % poll_id)
+    p = get_object_or_404(Poll, pk=poll_id)
+    try:
+        selected_choice = p.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        return render(request, 'polls/detail.html', {
+            'poll' : p,
+            'error_message' : "你未选择任何选项！",
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        # args p.id后面为什么要加','?
+        return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+

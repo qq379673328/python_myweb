@@ -1,9 +1,25 @@
-{% if latest_poll_list %}
-    <ul>
-    {% for poll in latest_poll_list %}
-        <li><a href="{% url 'polls:detail' poll.id %}">{{ poll.question }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+{% extends "polls/base.html" %}
+
+{% block content %}
+        <ul class="breadcrumb">
+          <li><a href="{% url 'polls:index' %}">首页</a> <span class="divider">/</span></li>
+        </ul>
+
+        {% if latest_poll_list %}
+        <div class="index-votes">
+            {% for poll in latest_poll_list %}
+                <div class="vote">
+                    <i class="icon-search"></i>
+                    <p class="label label-success">
+                        {{ poll.question }}
+                    </p>
+                    <br />
+                    <p>发布日期：{{ poll.pub_date }}</p>
+                    <a class="btn" href="{% url 'polls:detail' poll.id %}"><i class="icon-thumbs-up"></i></a>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p>无投票。</p>
+        {% endif %}
+{% endblock %}
