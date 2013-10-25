@@ -4,21 +4,26 @@
 import urllib2
 import urllib
 import os
+import sys
 from HTMLParser import HTMLParser
 
 ''' 次文件用于从 www.5tps.com 下载评书 '''
+
+#设置编码
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 #配置参数
 #请求页面
 url = 'http://www.5tps.com'
 #存放目录
-folder = 'pingshu_luanshixiaoxiong'
+folder = '中国古代奇案故事'.encode('gbk')
 #下载数目
-limit = 1 
+limit = 17
 #储存文件的根路径
-basepath = 'E:\\python_workspace\\python_myweb\\python_myweb\\test_code\\down'
+basepath = 'E:\\python_workspace\\python_myweb\\python_myweb\\test_code\\down\\评书'.encode('gbk')
 #文档内容-某篇评书
-bookpage = '/html/3114.html'
+bookpage = '/html/10550.html'
 
 
 headers = { #伪装为浏览器抓取
