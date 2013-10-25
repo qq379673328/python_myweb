@@ -5,6 +5,8 @@ import urllib2
 import urllib
 import os
 import sys
+import threading
+import time
 from HTMLParser import HTMLParser
 
 ''' 次文件用于从 www.5tps.com 下载评书 '''
@@ -17,13 +19,13 @@ sys.setdefaultencoding('utf-8')
 #请求页面
 url = 'http://www.5tps.com'
 #存放目录
-folder = '中国古代奇案故事'.encode('gbk')
+folder = '测试多线程-单田芳电视评书两段'.encode('gbk')
 #下载数目
-limit = 17
+limit = 3
 #储存文件的根路径
 basepath = 'E:\\python_workspace\\python_myweb\\python_myweb\\test_code\\down\\评书'.encode('gbk')
 #文档内容-某篇评书
-bookpage = '/html/10550.html'
+bookpage = '/html/11143.html'
 
 
 headers = { #伪装为浏览器抓取
@@ -65,6 +67,27 @@ def Schedule(a,b,c):
 		per = 100
 	print'%.2f%%' % per
 
+''' 下载一个文件-开辟新线程 '''
+class downAFile(threading.Thread):
+	def __init__(self, src, filepath, filename):
+		threading.Thread.__init__(self)
+		self.src = src
+		self.filepath = filepath
+		self.filename = filename
+		self.thread_stop = False
+
+	def run(self):
+		while not self.thread_stop:
+			if os.path.isfile(self.filepath):
+				print 'File['+self.filename+'] already download.'
+				return
+			print 'Thread (%s), Time:%s begin...\n' %(self.filename, time.ctime())
+			urllib.urlretrieve(self.src, self.filepath)
+			print self.filename + ' 下载完毕...'.encode('gbk')
+
+	def stop(self):
+		self.thread_stop = True
+
 #解析下载链接并下载
 class ParserDown(HTMLParser):
 	isdown = False
@@ -77,13 +100,7 @@ class ParserDown(HTMLParser):
 					src = attr[1]
 					filename = src.split('/').pop().split('?')[0]
 					filepath = basepath+'\\'+folder+'\\'+filename
-					if os.path.isfile(filepath):
-						print 'File['+filepath+'] already download.'
-						return
-					print 'Down file:'+filename
-					urllib.urlretrieve(src, filepath)
-					print 'Success...'
-					self.isdown = True
+					afileT = downAFile(src, filepath, filename).start()
 
 	def handle_endtag(self, tag):
 		pass
